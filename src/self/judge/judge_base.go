@@ -16,16 +16,14 @@ import (
 )
 
 type JudgeBase struct {
-	CodeFile      string
-	TimeLimit     int64 //Second
-	MemoryLimit   int64 //KB
-	OutputLimit   int64 //KB
-	RunningTime   int64 //耗时(ms)
-	RunningMemory int64 //所占空间
+	TimeLimit   int64 //Second
+	MemoryLimit int64 //KB
+	OutputLimit int64 //KB
+
 }
 
-func (this *JudgeBase) compare(userOutFileName string, caseOutFileName string) {
-
+func (this *JudgeBase) compare(userOutFileName string, caseOutFileName string) Result {
+	return Result{}
 }
 
 func (this *JudgeBase) compile(cmdName string, cmdArg []string, timeout time.Duration) Result {
@@ -75,9 +73,6 @@ func (this *JudgeBase) compile(cmdName string, cmdArg []string, timeout time.Dur
 }
 
 func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, outputFile string, timeout time.Duration) Result {
-	this.RunningMemory = -1
-	this.RunningTime = -1
-
 	cmd := exec.Command(cmdName, cmdArg...)
 
 	stderr, err := cmd.StderrPipe()
@@ -137,20 +132,26 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 	//}
 	if sig == syscall.SIGSEGV {
 		return Result{
-			ResultCode: RuntimeError,
-			ResultDes:  sig.String(),
+			ResultCode:    RuntimeError,
+			ResultDes:     sig.String(),
+			RunningTime:   -1,
+			RunningMemory: -1,
 		}
 	}
 	if sig == syscall.SIGXCPU || usage.Utime.Sec > this.TimeLimit || timeoutStopFlag {
 		return Result{
-			ResultCode: TimeLimitExceeded,
-			ResultDes:  "",
+			ResultCode:    TimeLimitExceeded,
+			ResultDes:     "",
+			RunningTime:   -1,
+			RunningMemory: -1,
 		}
 	}
 	if sig == syscall.SIGXFSZ {
 		return Result{
-			ResultCode: OutputLimitExceeded,
-			ResultDes:  sig.String(),
+			ResultCode:    OutputLimitExceeded,
+			ResultDes:     sig.String(),
+			RunningTime:   -1,
+			RunningMemory: -1,
 		}
 	}
 	if usage.Maxrss > this.MemoryLimit*1024 {
@@ -159,8 +160,10 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 			panic(err)
 		}
 		return Result{
-			ResultCode: MemoryLimitExceeded,
-			ResultDes:  string(stderrData),
+			ResultCode:    MemoryLimitExceeded,
+			ResultDes:     string(stderrData),
+			RunningTime:   -1,
+			RunningMemory: -1,
 		}
 	}
 	if wStatus.Exited() {
@@ -170,17 +173,21 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 				panic(err)
 			}
 			return Result{
-				ResultCode: RuntimeError,
-				ResultDes:  string(stderrData),
+				ResultCode:    RuntimeError,
+				ResultDes:     string(stderrData),
+				RunningTime:   -1,
+				RunningMemory: -1,
 			}
 		}
 	}
 
-	this.RunningTime = (usage.Stime.Sec+usage.Utime.Sec)*1000 + int64(usage.Stime.Usec+usage.Utime.Usec)/1000
-	this.RunningMemory = usage.Maxrss / 1024
+	useTime := (usage.Stime.Sec+usage.Utime.Sec)*1000 + int64(usage.Stime.Usec+usage.Utime.Usec)/1000
+	useMemory := usage.Maxrss / 1024
 
 	return Result{
-		ResultCode: Normal,
-		ResultDes:  "",
+		ResultCode:    Normal,
+		ResultDes:     "",
+		RunningTime:   useTime,
+		RunningMemory: useMemory,
 	}
 }

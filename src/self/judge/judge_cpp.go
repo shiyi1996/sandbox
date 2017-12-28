@@ -14,7 +14,7 @@ type JudgeCpp struct {
 }
 
 func (this *JudgeCpp) Compile() Result {
-	return this.compile("g++", []string{this.CodeFile}, 5*time.Second)
+	return this.compile("g++", []string{"code.cpp"}, 5*time.Second)
 }
 
 func (this *JudgeCpp) Run(inFileCase string, outFileCase string) Result {
