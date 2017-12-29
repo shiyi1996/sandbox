@@ -17,8 +17,8 @@ func (this *JudgeCpp) Compile() Result {
 	return this.compile("g++", []string{"code.cpp"}, 5*time.Second)
 }
 
-func (this *JudgeCpp) Run(inFileCase string, outFileCase string) Result {
-	result := this.run("./a.out", []string{}, inFileCase, "output.txt", 2*time.Second)
+func (this *JudgeCpp) Run(inputFile string, outputFile string) Result {
+	result := this.run("./a.out", []string{}, inputFile, outputFile, 2*time.Second)
 	//this.compare("output.txt", outFileCase)
 	return result
 }

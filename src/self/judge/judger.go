@@ -1,10 +1,17 @@
 package judge
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
+)
+
+const (
+	changeSubmitUrl = "http://127.0.0.1:8888/change_submit"
 )
 
 type Judger struct {
@@ -29,8 +36,24 @@ func (this *Judger) DoJudge() {
 	}
 }
 
-func (this *Judger) notify() {
+func (this *Judger) notify(result Result) {
+	data, err := json.Marshal(result)
+	if err != nil {
+		panic(err)
+	}
 
+	body := bytes.NewBuffer([]byte(data))
+	_, err = http.Post(changeSubmitUrl, "application/json;charset=utf-8", body)
+	if err != nil {
+		panic(err)
+	}
+
+	//r, err := ioutil.ReadAll(res.Body)
+	//res.Body.Close()
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Printf("%s", r)
 }
 
 func (this *Judger) getCaseList(path string) []string {
@@ -55,6 +78,10 @@ func (this *Judger) getCaseList(path string) []string {
 	return caseList
 }
 
+func (this *Judger) compare(useOutput string, caseOutput string) {
+
+}
+
 func (this *Judger) doJudge() {
 	judge := newJudge(this.Language, this.TimeLimit, this.MemoryLimit, this.OutputLimit)
 
@@ -66,7 +93,9 @@ func (this *Judger) doJudge() {
 
 	caseList := this.getCaseList(getCurrentPath() + "/case")
 	for _, name := range caseList {
-		result = judge.Run("case/"+name+".in", "case/"+name+".out")
+		result = judge.Run("case/"+name+".in", "output.txt")
+
+		this.compare("output.txt", "case/"+name+".out")
 	}
 }
 

@@ -61,6 +61,6 @@ func TestJudgeBaseRun(t *testing.T) {
 	result = judgeBase.run("/Users/shiyi/project/fightcoder-sandbox/case/a.out",
 		[]string{}, "1.in", "1.out", 2*time.Second)
 	fmt.Println(result)
-	fmt.Println("time:", judgeBase.RunningTime)
-	fmt.Println("memory:", judgeBase.RunningMemory)
+	fmt.Println("time:", result.RunningTime)
+	fmt.Println("memory:", result.RunningMemory)
 }

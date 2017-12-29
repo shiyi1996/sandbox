@@ -6,12 +6,11 @@
 package judge
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestGetCaseList(t *testing.T) {
 	//caseList := getCaseList("//Users/shiyi/project/fightcoder-sandbox/case")
-	caseList := getCaseList(getCurrentPath() + "/case")
-	fmt.Println(caseList)
+	//caseList := getCaseList(getCurrentPath() + "/case")
+	//fmt.Println(caseList)
 }

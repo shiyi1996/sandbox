@@ -22,10 +22,6 @@ type JudgeBase struct {
 
 }
 
-func (this *JudgeBase) compare(userOutFileName string, caseOutFileName string) Result {
-	return Result{}
-}
-
 func (this *JudgeBase) compile(cmdName string, cmdArg []string, timeout time.Duration) Result {
 	cmd := exec.Command(cmdName, cmdArg...)
 

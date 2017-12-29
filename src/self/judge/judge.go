@@ -7,7 +7,7 @@ package judge
 
 type Judge interface {
 	Compile() Result
-	Run(inFileCase string, outFileCase string) Result
+	Run(inputFile string, outputFile string) Result
 }
 
 func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit int64) Judge {
