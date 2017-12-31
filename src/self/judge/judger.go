@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	changeSubmitUrl = "http://127.0.0.1:8888/change_submit"
+	changeSubmitUrl = "http://judgeip:8888/change_submit"
+	//changeSubmitUrl = "http://128.0.9.207:8888/change_submit"
 )
 
 type Judger struct {
@@ -36,24 +37,38 @@ func (this *Judger) DoJudge() {
 	}
 }
 
+type ChangeSubMess struct {
+	SubmitType string
+	SubmitId   int64
+	Result     Result
+}
+
 func (this *Judger) notify(result Result) {
-	data, err := json.Marshal(result)
+	fmt.Printf("notify: %#v\n", result)
+
+	changeSubMess := ChangeSubMess{
+		Result:     result,
+		SubmitType: this.SubmitType,
+		SubmitId:   this.SubmitId,
+	}
+
+	data, err := json.Marshal(changeSubMess)
 	if err != nil {
 		panic(err)
 	}
 
 	body := bytes.NewBuffer([]byte(data))
-	_, err = http.Post(changeSubmitUrl, "application/json;charset=utf-8", body)
+	res, err := http.Post(changeSubmitUrl, "application/json;charset=utf-8", body)
 	if err != nil {
 		panic(err)
 	}
 
-	//r, err := ioutil.ReadAll(res.Body)
-	//res.Body.Close()
-	//if err != nil {
-	//	return
-	//}
-	//fmt.Printf("%s", r)
+	r, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		return
+	}
+	fmt.Printf("%s", r)
 }
 
 func (this *Judger) getCaseList(path string) []string {
@@ -78,24 +93,45 @@ func (this *Judger) getCaseList(path string) []string {
 	return caseList
 }
 
-func (this *Judger) compare(useOutput string, caseOutput string) {
-
+func (this *Judger) compare(useOutput string, caseOutput string) Result {
+	return Result{}
 }
 
 func (this *Judger) doJudge() {
 	judge := newJudge(this.Language, this.TimeLimit, this.MemoryLimit, this.OutputLimit)
 
+	this.notify(Result{
+		ResultCode:    Compiling,
+		ResultDes:     "",
+		RunningMemory: -1,
+		RunningTime:   -1})
+
 	result := judge.Compile()
 	if result.ResultCode != 0 {
 		fmt.Printf("Compile Error :%#v\n", result)
+		this.notify(result)
 		return
 	}
 
+	this.notify(Result{
+		ResultCode:    Running,
+		ResultDes:     "",
+		RunningMemory: -1,
+		RunningTime:   -1})
+
+	//caseList := this.getCaseList("case")
 	caseList := this.getCaseList(getCurrentPath() + "/case")
 	for _, name := range caseList {
 		result = judge.Run("case/"+name+".in", "output.txt")
 
-		this.compare("output.txt", "case/"+name+".out")
+		if result.ResultCode != 0 {
+			fmt.Printf("Running Error :%#v\n", result)
+			this.notify(result)
+			return
+		}
+
+		//result = this.compare("output.txt", "case/"+name+".out")
+		//this.notify(result)
 	}
 }
 

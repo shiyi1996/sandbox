@@ -7,9 +7,7 @@ apk add g++; \
 apk add git; \
 apk add go;
 
-ENV GOPATH=/workspace:/fightcoder-sandbox:/fightcoder-sandbox/deps \
-    sandbox=/fightcoder-sandbox/sandbox
-
+ENV GOPATH=/workspace:/fightcoder-sandbox:/fightcoder-sandbox/deps
 ADD . /fightcoder-sandbox
 
 RUN cd /fightcoder-sandbox/;go build;mv fightcoder-sandbox sandbox

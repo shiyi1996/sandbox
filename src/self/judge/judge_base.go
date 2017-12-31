@@ -43,7 +43,7 @@ func (this *JudgeBase) compile(cmdName string, cmdArg []string, timeout time.Dur
 		}
 	case err := <-errC:
 		if err != nil {
-			fmt.Println("报错", err)
+			fmt.Println("compile()报错", err)
 			return Result{
 				ResultCode: CompilationError,
 				ResultDes:  string(output),

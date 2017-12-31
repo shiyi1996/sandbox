@@ -28,7 +28,7 @@ func TestJudgeBasecompileSucc(t *testing.T) {
 func TestJudgeBasecompileWarn(t *testing.T) {
 	os.Chdir("/Users/shiyi/project/fightcoder-sandbox/case")
 
-	result := judgeBase.compile("g++", []string{"2.cpp"}, 2*time.Second)
+	result := judgeBase.compile("g++", []string{"code.cpp"}, 2*time.Second)
 	fmt.Println(result)
 }
 
