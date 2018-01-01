@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -93,8 +94,20 @@ func (this *Judger) getCaseList(path string) []string {
 	return caseList
 }
 
-func (this *Judger) compare(useOutput string, caseOutput string) Result {
-	return Result{}
+func (this *Judger) compare(userOutput string, caseOutput string) Result {
+	cmd := exec.Command("diff", "-B", "-b", userOutput, caseOutput)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return Result{
+			ResultCode: WrongAnswer,
+			ResultDes:  string(output),
+		}
+	}
+
+	return Result{
+		ResultCode: Accepted,
+	}
 }
 
 func (this *Judger) doJudge() {

@@ -1,6 +1,7 @@
 package judge
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -21,4 +22,12 @@ func TestDoJudge(t *testing.T) {
 	os.Chdir("/Users/shiyi/project/fightcoder/sandbox/tmp")
 
 	judger.doJudge()
+}
+
+func TestCompare(t *testing.T) {
+	os.Chdir("/Users/shiyi/project/fightcoder/sandbox/tmp")
+
+	var judger Judger
+	result := judger.compare("/Users/shiyi/project/fightcoder/sandbox/tmp/a", "/Users/shiyi/project/fightcoder/sandbox/tmp/b")
+	fmt.Printf("%#v", result)
 }
