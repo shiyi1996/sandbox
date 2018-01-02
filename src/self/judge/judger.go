@@ -48,6 +48,7 @@ type ChangeSubMess struct {
 
 func (this *Judger) notify(result Result) {
 	fmt.Printf("notify: %#v\n", result)
+	fmt.Printf("%s\n", result.ResultDes)
 
 	changeSubMess := ChangeSubMess{
 		Result:     result,
@@ -71,7 +72,7 @@ func (this *Judger) notify(result Result) {
 	if err != nil {
 		return
 	}
-	fmt.Printf("%s", r)
+	fmt.Printf("notify res: %s\n", r)
 }
 
 func (this *Judger) getCaseList(path string) []string {
