@@ -12,8 +12,10 @@ import (
 )
 
 const (
-	changeSubmitUrl = "http://judgeip:8888/change_submit"
-	//changeSubmitUrl = "http://128.0.9.207:8888/change_submit"
+	//changeSubmitUrl = "http://judgeip:8888/change_submit"
+	changeSubmitUrl = "http://128.0.9.207:8888/change_submit"
+	//workDir         = "/workspace"
+	workDir = "/Users/shiyi/project/fightcoder/sandbox/tmp"
 )
 
 type Judger struct {
@@ -95,7 +97,7 @@ func (this *Judger) getCaseList(path string) []string {
 }
 
 func (this *Judger) compare(userOutput string, caseOutput string) Result {
-	cmd := exec.Command("diff", "-B", "-b", userOutput, caseOutput)
+	cmd := exec.Command("diff", "-B", userOutput, caseOutput)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -117,7 +119,8 @@ func (this *Judger) doJudge() {
 		ResultCode:    Compiling,
 		ResultDes:     "",
 		RunningMemory: -1,
-		RunningTime:   -1})
+		RunningTime:   -1,
+	})
 
 	result := judge.Compile()
 	if result.ResultCode != 0 {
@@ -130,22 +133,43 @@ func (this *Judger) doJudge() {
 		ResultCode:    Running,
 		ResultDes:     "",
 		RunningMemory: -1,
-		RunningTime:   -1})
+		RunningTime:   -1,
+	})
 
-	//caseList := this.getCaseList("case")
-	caseList := this.getCaseList(getCurrentPath() + "/case")
+	totalResult := Result{
+		ResultCode:    Accepted,
+		ResultDes:     "",
+		RunningMemory: 0,
+		RunningTime:   0,
+	}
+
+	//caseList := this.getCaseList(getCurrentPath() + "/case")
+	caseList := this.getCaseList(workDir + "/case")
+
 	for _, name := range caseList {
-		result = judge.Run("case/"+name+".in", "output.txt")
-
-		if result.ResultCode != 0 {
+		result = judge.Run(workDir+"/case/"+name+".in", workDir+"/output.txt")
+		if result.ResultCode != Normal {
 			fmt.Printf("Running Error :%#v\n", result)
 			this.notify(result)
 			return
 		}
 
-		//result = this.compare("output.txt", "case/"+name+".out")
-		//this.notify(result)
+		if result.RunningMemory > totalResult.RunningMemory {
+			totalResult.RunningMemory = result.RunningMemory
+		}
+
+		if result.RunningTime > totalResult.RunningTime {
+			totalResult.RunningTime = result.RunningTime
+		}
+
+		result = this.compare(workDir+"/output.txt", workDir+"/case/"+name+".out")
+		if result.ResultCode != Accepted {
+			this.notify(result)
+			return
+		}
 	}
+
+	this.notify(totalResult)
 }
 
 func (this *Judger) doContestJudge() {}
