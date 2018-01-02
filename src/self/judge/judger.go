@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	//changeSubmitUrl = "http://judgeip:8888/change_submit"
-	changeSubmitUrl = "http://128.0.9.207:8888/change_submit"
-	//workDir         = "/workspace"
-	workDir = "/Users/shiyi/project/fightcoder/sandbox/tmp"
+	changeSubmitUrl = "http://judgeip:8888/change_submit"
+	//changeSubmitUrl = "http://128.0.9.207:8888/change_submit"
+	workDir = "/workspace"
+	//workDir = "/Users/shiyi/project/fightcoder/sandbox/tmp"
 )
 
 type Judger struct {
