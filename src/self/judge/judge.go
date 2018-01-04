@@ -20,14 +20,22 @@ func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit i
 				OutputLimit: outputLimit,
 			},
 		}
-		//case "c":
-		//	return &JudgeCpp{
-		//		JudgeBase{
-		//			TimeLimit:   timeLimit,
-		//			MemoryLimit: memoryLimit,
-		//			OutputLimit: outputLimit,
-		//		},
-		//	}
+	case "c":
+		return &JudgeC{
+			JudgeBase{
+				TimeLimit:   timeLimit,
+				MemoryLimit: memoryLimit,
+				OutputLimit: outputLimit,
+			},
+		}
+	case "python":
+		return &JudgePy{
+			JudgeBase{
+				TimeLimit:   timeLimit,
+				MemoryLimit: memoryLimit,
+				OutputLimit: outputLimit,
+			},
+		}
 	default:
 		panic("No such language")
 	}
