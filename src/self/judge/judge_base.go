@@ -44,6 +44,7 @@ func (this *JudgeBase) compile(cmdName string, cmdArg []string, timeout time.Dur
 	case err := <-errC:
 		if err != nil {
 			fmt.Println("compile()报错", err)
+			output = output[:250]
 			return Result{
 				ResultCode: CompilationError,
 				ResultDes:  string(output),
@@ -157,7 +158,7 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 		}
 		return Result{
 			ResultCode:    MemoryLimitExceeded,
-			ResultDes:     string(stderrData),
+			ResultDes:     string(stderrData[:250]),
 			RunningTime:   -1,
 			RunningMemory: -1,
 		}
@@ -170,7 +171,7 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 			}
 			return Result{
 				ResultCode:    RuntimeError,
-				ResultDes:     string(stderrData),
+				ResultDes:     string(stderrData[:250]),
 				RunningTime:   -1,
 				RunningMemory: -1,
 			}
