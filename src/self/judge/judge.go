@@ -44,6 +44,14 @@ func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit i
 				OutputLimit: outputLimit,
 			},
 		}
+	case "java":
+		return &JudgeJava{
+			JudgeBase{
+				TimeLimit:   timeLimit,
+				MemoryLimit: memoryLimit,
+				OutputLimit: outputLimit,
+			},
+		}
 	default:
 		panic("No such judge: " + language)
 	}
