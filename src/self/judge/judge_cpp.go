@@ -14,7 +14,7 @@ type JudgeCpp struct {
 }
 
 func (this *JudgeCpp) Compile() Result {
-	return this.compile("g++", []string{"code.cpp"}, 5*time.Second)
+	return this.compile("g++", []string{"code.cpp", "-fmax-errors=200"}, 5*time.Second)
 }
 
 func (this *JudgeCpp) Run(inputFile string, outputFile string) Result {

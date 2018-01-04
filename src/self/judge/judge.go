@@ -11,10 +11,9 @@ type Judge interface {
 }
 
 func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit int64) Judge {
-	var jd Judge
 	switch language {
 	case "c++":
-		jd = &JudgeCpp{
+		return &JudgeCpp{
 			JudgeBase{
 				TimeLimit:   timeLimit,
 				MemoryLimit: memoryLimit,
@@ -22,7 +21,7 @@ func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit i
 			},
 		}
 	case "c":
-		jd = &JudgeC{
+		return &JudgeC{
 			JudgeBase{
 				TimeLimit:   timeLimit,
 				MemoryLimit: memoryLimit,
@@ -30,7 +29,7 @@ func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit i
 			},
 		}
 	case "python":
-		jd = &JudgePy{
+		return &JudgePy{
 			JudgeBase{
 				TimeLimit:   timeLimit,
 				MemoryLimit: memoryLimit,
@@ -40,6 +39,4 @@ func newJudge(language string, timeLimit int64, memoryLimit int64, outputLimit i
 	default:
 		panic("No such judge: " + language)
 	}
-
-	return jd
 }
