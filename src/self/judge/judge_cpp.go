@@ -18,6 +18,6 @@ func (this *JudgeCpp) Compile() Result {
 }
 
 func (this *JudgeCpp) Run(inputFile string, outputFile string) Result {
-	result := this.run("./a.out", []string{}, inputFile, outputFile, 2*time.Second)
+	result := this.run("./a.out", []string{}, inputFile, outputFile, (time.Duration)(1+this.MemoryLimit)*time.Second)
 	return result
 }
