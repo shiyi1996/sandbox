@@ -135,7 +135,7 @@ func (this *JudgeBase) run(cmdName string, cmdArg []string, inputFile string, ou
 			RunningMemory: -1,
 		}
 	}
-	if sig == syscall.SIGXCPU || usage.Utime.Sec > this.TimeLimit || timeoutStopFlag {
+	if sig == syscall.SIGXCPU || usage.Utime.Sec > this.TimeLimit/1000.0 || timeoutStopFlag {
 		return Result{
 			ResultCode:    TimeLimitExceeded,
 			ResultDes:     "",
